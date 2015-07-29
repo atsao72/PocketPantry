@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, PantryFragment.OnFragmentInteractionListener,
-        RecipeFragment.OnFragmentInteractionListener {
+        RecipeFragment.OnFragmentInteractionListener, AddItemFragment.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -64,6 +64,12 @@ public class MainActivity extends ActionBarActivity
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                 .commit();
+    }
+
+    public void onAddItemFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        AddItemFragment fragment = new AddItemFragment();
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     public void onSectionAttached(int number) {
