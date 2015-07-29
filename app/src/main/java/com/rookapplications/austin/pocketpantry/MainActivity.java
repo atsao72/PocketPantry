@@ -83,6 +83,11 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
+    public void addItemFragmentAttached(){
+        mTitle = "Add Item";
+        restoreActionBar();
+    }
+
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);

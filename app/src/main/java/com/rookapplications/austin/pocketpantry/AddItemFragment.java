@@ -43,6 +43,7 @@ public class AddItemFragment extends Fragment {
         super.onAttach(activity);
         try {
             mListener = (OnFragmentInteractionListener) activity;
+            mListener.addItemFragmentAttached();
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -66,7 +67,7 @@ public class AddItemFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-
+        void addItemFragmentAttached();
     }
 
 }
