@@ -1,5 +1,6 @@
 package com.rookapplications.austin.pocketpantry;
 
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
@@ -247,7 +248,9 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         if (item.getItemId() == R.id.action_example) {
-            Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
+            FragmentManager fragmentManager = getFragmentManager();
+            AddItemFragment fragment = new AddItemFragment();
+            fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
             return true;
         }
 
