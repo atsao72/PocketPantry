@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/et_item_input"
         android:imeOptions="actionDone"
+        android:singleLine="true"
         android:capitalize="sentences"
         android:layout_below="@+id/tv_enter_item"
         android:layout_centerHorizontal="true"
