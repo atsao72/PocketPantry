@@ -65,15 +65,18 @@ public class MainActivity extends ActionBarActivity
         // update the main content by replacing fragments
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment = new Fragment();
+        String tag = "";
         switch (position){
             case 0:
                 fragment = new PantryFragment();
+                tag = "PANTRY_FRAGMENT";
                 break;
             case 1:
                 fragment = new RecipeFragment();
+                tag = "RECIPE_FRAGMENT";
                 break;
         }
-        fragmentTransaction.replace(R.id.container, fragment).commit();
+        fragmentTransaction.replace(R.id.container, fragment, tag).commit();
     }
 
     public void onAddItemFragment() {
@@ -119,6 +122,7 @@ public class MainActivity extends ActionBarActivity
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(year, month, day);
                         pantryMap.put(editText.getText().toString(), calendar.getTime());
+                        addItemToPantry(editText.getText().toString(), calendar.getTime());
                     }
                 })
                 .setNegativeButton("Cancel",
@@ -131,6 +135,12 @@ public class MainActivity extends ActionBarActivity
         // create an alert dialog
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
+    }
+
+    private void addItemToPantry(String itemName, Date expiration)
+    {
+        PantryFragment fragment = (PantryFragment) getSupportFragmentManager().findFragmentByTag("PANTRY_FRAGMENT");
+        fragment.addItem(itemName, expiration);
     }
 
     @Override

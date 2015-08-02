@@ -7,6 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
+import android.widget.TextView;
+
+import java.util.Date;
 
 
 /**
@@ -20,6 +24,7 @@ import android.view.ViewGroup;
 public class PantryFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+    private TableLayout tableLayout;
 
     public PantryFragment() {
         // Required empty public constructor
@@ -34,7 +39,9 @@ public class PantryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pantry, container, false);
+        View view = inflater.inflate(R.layout.fragment_pantry, container, false);
+        tableLayout = (TableLayout) view.findViewById(R.id.tableLayout);
+        return view;
     }
 
     @Override
@@ -55,6 +62,14 @@ public class PantryFragment extends Fragment {
         mListener = null;
     }
 
+    public void addItem(String item, Date expiration) {
+        View tableRow = getActivity().getLayoutInflater().inflate(R.layout.layout_table_row, null,false);
+        TextView itemName = (TextView) tableRow.findViewById(R.id.item_name);
+        TextView expirationDate = (TextView) tableRow.findViewById(R.id.item_expiration);
+        itemName.setText(item);
+        expirationDate.setText(expiration.toString());
+        tableLayout.addView(tableRow);
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
