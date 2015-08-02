@@ -24,6 +24,11 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, PantryFragment.OnFragmentInteractionListener,
@@ -34,6 +39,7 @@ public class MainActivity extends ActionBarActivity
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Menu optionsMenu;
+    Map<String,Date> pantryMap;
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -47,7 +53,7 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
-
+        pantryMap = new HashMap<String, Date>();
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
@@ -93,7 +99,7 @@ public class MainActivity extends ActionBarActivity
         actionBar.setTitle(mTitle);
     }
 
-    protected void showInputDialog() {
+    private void showInputDialog() {
 
         // get prompts.xml view
         LayoutInflater layoutInflater = LayoutInflater.from(MainActivity.this);
@@ -107,6 +113,12 @@ public class MainActivity extends ActionBarActivity
         alertDialogBuilder.setCancelable(false)
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        int day = datePicker.getDayOfMonth();
+                        int month = datePicker.getMonth();
+                        int year =  datePicker.getYear();
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.set(year, month, day);
+                        pantryMap.put(editText.getText().toString(), calendar.getTime());
                     }
                 })
                 .setNegativeButton("Cancel",
