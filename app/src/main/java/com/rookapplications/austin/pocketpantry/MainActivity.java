@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 
@@ -28,7 +29,7 @@ public class MainActivity extends ActionBarActivity
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-
+    private Menu optionsMenu;
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -71,6 +72,10 @@ public class MainActivity extends ActionBarActivity
         if (fm.getBackStackEntryCount() > 0) {
             System.out.println("MainActivity popping backstack");
             fm.popBackStack();
+            if(mTitle.equals("Add Item")){
+                mTitle = "My Pantry";
+                restoreActionBar();
+            }
         } else {
             super.onBackPressed();
         }
@@ -101,6 +106,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     public void restoreActionBar() {
+        updateOptionsMenu();
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
@@ -115,6 +121,7 @@ public class MainActivity extends ActionBarActivity
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.menu_main, menu);
+            optionsMenu = menu;
             restoreActionBar();
             return true;
         }
@@ -136,4 +143,15 @@ public class MainActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private void updateOptionsMenu(){
+        MenuItem menuItem = (MenuItem) optionsMenu.findItem(R.id.action_example);
+        if(!mTitle.equals("Add Item")){
+            menuItem.setTitle("Add Item");
+            menuItem.setVisible(true);
+        }
+        else
+        {
+            menuItem.setVisible(false);
+        }
+    }
 }
