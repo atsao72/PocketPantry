@@ -27,7 +27,7 @@ import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, PantryFragment.OnFragmentInteractionListener,
-        RecipeFragment.OnFragmentInteractionListener, AddItemFragment.OnFragmentInteractionListener {
+        RecipeFragment.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -70,28 +70,8 @@ public class MainActivity extends ActionBarActivity
         fragmentTransaction.replace(R.id.container, fragment).commit();
     }
 
-    @Override
-    public void onBackPressed() {
-        FragmentManager fm = getSupportFragmentManager();
-        if (fm.getBackStackEntryCount() > 0) {
-            System.out.println("MainActivity popping backstack");
-            fm.popBackStack();
-            if(mTitle.equals("Add Item")){
-                mTitle = "My Pantry";
-                restoreActionBar();
-            }
-        } else {
-            super.onBackPressed();
-        }
-    }
-
     public void onAddItemFragment() {
         showInputDialog();
-        /*FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        AddItemFragment fragment = new AddItemFragment();
-        fragmentTransaction.replace(R.id.container, fragment);
-        fragmentTransaction.addToBackStack("AddItemFragment");
-        fragmentTransaction.commit();*/
     }
 
     public void onSectionAttached(int number) {
@@ -103,11 +83,6 @@ public class MainActivity extends ActionBarActivity
                 mTitle = "Find Recipes";
                 break;
         }
-    }
-
-    public void addItemFragmentAttached(){
-        mTitle = "Add Item";
-        restoreActionBar();
     }
 
     public void restoreActionBar() {
@@ -176,7 +151,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     private void updateOptionsMenu(){
-        MenuItem menuItem = (MenuItem) optionsMenu.findItem(R.id.action_example);
+        MenuItem menuItem = optionsMenu.findItem(R.id.action_example);
         if(mTitle.equals("My Pantry")){
             menuItem.setTitle("Add Item");
             menuItem.setVisible(true);
