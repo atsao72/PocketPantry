@@ -1,6 +1,7 @@
 package com.rookapplications.austin.pocketpantry;
 
 import android.app.Activity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -51,7 +52,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment = new Fragment();
         switch (position){
             case 0:
@@ -61,15 +62,26 @@ public class MainActivity extends ActionBarActivity
                 fragment = new RecipeFragment();
                 break;
         }
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, fragment)
-                .commit();
+        fragmentTransaction.replace(R.id.container, fragment).commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() > 0) {
+            System.out.println("MainActivity popping backstack");
+            fm.popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public void onAddItemFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         AddItemFragment fragment = new AddItemFragment();
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+        fragmentTransaction.replace(R.id.container, fragment);
+        fragmentTransaction.addToBackStack("AddItemFragment");
+        fragmentTransaction.commit();
     }
 
     public void onSectionAttached(int number) {
