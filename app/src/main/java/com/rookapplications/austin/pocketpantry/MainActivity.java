@@ -1,6 +1,8 @@
 package com.rookapplications.austin.pocketpantry;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -18,6 +20,8 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -82,11 +86,12 @@ public class MainActivity extends ActionBarActivity
     }
 
     public void onAddItemFragment() {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        showInputDialog();
+        /*FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         AddItemFragment fragment = new AddItemFragment();
         fragmentTransaction.replace(R.id.container, fragment);
         fragmentTransaction.addToBackStack("AddItemFragment");
-        fragmentTransaction.commit();
+        fragmentTransaction.commit();*/
     }
 
     public void onSectionAttached(int number) {
@@ -113,6 +118,33 @@ public class MainActivity extends ActionBarActivity
         actionBar.setTitle(mTitle);
     }
 
+    protected void showInputDialog() {
+
+        // get prompts.xml view
+        LayoutInflater layoutInflater = LayoutInflater.from(MainActivity.this);
+        View promptView = layoutInflater.inflate(R.layout.layout_add_item, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        alertDialogBuilder.setView(promptView);
+
+        final EditText editText = (EditText) promptView.findViewById(R.id.et_item_input);
+        final DatePicker datePicker = (DatePicker)promptView.findViewById(R.id.datePicker);
+        // setup a dialog window
+        alertDialogBuilder.setCancelable(false)
+                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        // create an alert dialog
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
