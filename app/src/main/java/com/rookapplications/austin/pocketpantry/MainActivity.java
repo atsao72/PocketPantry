@@ -145,7 +145,7 @@ public class MainActivity extends ActionBarActivity
 
     private void updateOptionsMenu(){
         MenuItem menuItem = (MenuItem) optionsMenu.findItem(R.id.action_example);
-        if(!mTitle.equals("Add Item")){
+        if(mTitle.equals("My Pantry")){
             menuItem.setTitle("Add Item");
             menuItem.setVisible(true);
         }
