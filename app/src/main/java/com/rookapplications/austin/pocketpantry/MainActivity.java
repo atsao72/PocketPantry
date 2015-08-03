@@ -39,7 +39,6 @@ public class MainActivity extends ActionBarActivity
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Menu optionsMenu;
-    Map<String,Date> pantryMap;
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -53,7 +52,6 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
-        pantryMap = new HashMap<String, Date>();
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
@@ -121,8 +119,8 @@ public class MainActivity extends ActionBarActivity
                         int year =  datePicker.getYear();
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(year, month, day);
-                        pantryMap.put(editText.getText().toString(), calendar.getTime());
-                        addItemToPantry(editText.getText().toString(), calendar.getTime());
+                        PantryFragment fragment = (PantryFragment) getSupportFragmentManager().findFragmentByTag("PANTRY_FRAGMENT");
+                        fragment.addItem(editText.getText().toString(), calendar.getTime());
                     }
                 })
                 .setNegativeButton("Cancel",
@@ -135,12 +133,6 @@ public class MainActivity extends ActionBarActivity
         // create an alert dialog
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
-    }
-
-    private void addItemToPantry(String itemName, Date expiration)
-    {
-        PantryFragment fragment = (PantryFragment) getSupportFragmentManager().findFragmentByTag("PANTRY_FRAGMENT");
-        fragment.addItem(itemName, expiration);
     }
 
     @Override
