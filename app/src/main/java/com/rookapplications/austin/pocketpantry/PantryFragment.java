@@ -59,7 +59,7 @@ public class PantryFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pantry, container, false);
         tableLayout = (TableLayout) view.findViewById(R.id.tableLayout);
-        jItemsArray = new JSONArray();
+        jItemsArray = mListener.getPantry();
         updatePantryList(true);
         return view;
     }
@@ -86,6 +86,7 @@ public class PantryFragment extends Fragment {
         SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
         String message = item + "#" + format.format(expiration) + '\n';
         jItemsArray.put(message);
+        mListener.updatePantry(jItemsArray);
         updatePantryList(false);
     }
 
@@ -93,7 +94,6 @@ public class PantryFragment extends Fragment {
         try {
             if (isFirstTime) {
                 for (int i = 0; i < jItemsArray.length(); i++) {
-
                     addTableRow(jItemsArray.getString(i));
                 }
             } else {
@@ -144,7 +144,9 @@ public class PantryFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        public void onSectionAttached(int number);
+        void onSectionAttached(int number);
+        JSONArray getPantry();
+        void updatePantry(JSONArray array);
     }
 
 }

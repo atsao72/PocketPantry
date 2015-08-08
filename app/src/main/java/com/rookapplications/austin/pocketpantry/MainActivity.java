@@ -3,6 +3,8 @@ package com.rookapplications.austin.pocketpantry;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -24,6 +26,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -39,6 +45,8 @@ public class MainActivity extends ActionBarActivity
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private Menu optionsMenu;
+    JSONArray pantryItems;
+    SharedPreferences preferences;
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -48,7 +56,19 @@ public class MainActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String strJson = preferences.getString("pantryData","");
+        if(!strJson.equals("")){
+            try{
+                JSONObject jsonData = new JSONObject(strJson);
+                pantryItems = jsonData.getJSONArray("pantry");
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
+        else{
+            pantryItems = new JSONArray();
+        }
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -77,6 +97,18 @@ public class MainActivity extends ActionBarActivity
         fragmentTransaction.replace(R.id.container, fragment, tag).commit();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        JSONObject jObj = new JSONObject();
+        try{
+            jObj.put("pantry", pantryItems);
+            preferences.edit().putString("pantryData", jObj.toString()).apply();
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
     public void onAddItemFragment() {
         showInputDialog();
     }
@@ -90,6 +122,14 @@ public class MainActivity extends ActionBarActivity
                 mTitle = "Find Recipes";
                 break;
         }
+    }
+//PantryFragment Listener
+    public JSONArray getPantry(){
+        return pantryItems;
+    }
+
+    public void updatePantry(JSONArray array){
+        pantryItems = array;
     }
 
     public void restoreActionBar() {
