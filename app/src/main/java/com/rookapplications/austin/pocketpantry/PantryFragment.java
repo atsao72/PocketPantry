@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -75,8 +76,9 @@ public class PantryFragment extends Fragment {
 
     public void addItem(String item, Date expiration) {
         try{
+            SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
             FileOutputStream fos = getActivity().getApplicationContext().openFileOutput(PANTRY_FILE, Context.MODE_APPEND);
-            String message = item + "#" + expiration.toString() + '\n';
+            String message = item + "#" + format.format(expiration) + '\n';
             fos.write(message.getBytes());
             fos.close();
             updatePantryList();
@@ -113,6 +115,10 @@ public class PantryFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setTextColor(){
+
     }
     /**
      * This interface must be implemented by activities that contain this
