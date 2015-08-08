@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,6 +42,7 @@ public class PantryFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private TableLayout tableLayout;
     private int numItemsListed;
+    private JSONArray jItemsArray;
 
     public PantryFragment() {
         numItemsListed = 0;
@@ -55,6 +59,7 @@ public class PantryFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pantry, container, false);
         tableLayout = (TableLayout) view.findViewById(R.id.tableLayout);
+        jItemsArray = new JSONArray();
         updatePantryList(true);
         return view;
     }
@@ -78,72 +83,56 @@ public class PantryFragment extends Fragment {
     }
 
     public void addItem(String item, Date expiration) {
-        try{
-            SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
-            FileOutputStream fos = getActivity().getApplicationContext().openFileOutput(PANTRY_FILE, Context.MODE_APPEND);
-            String message = item + "#" + format.format(expiration) + '\n';
-            fos.write(message.getBytes());
-            fos.close();
-            updatePantryList(false);
-        } catch (FileNotFoundException e){
-            System.out.println("FileNotFound");
-            e.printStackTrace();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
+        String message = item + "#" + format.format(expiration) + '\n';
+        jItemsArray.put(message);
+        updatePantryList(false);
     }
 
     private void updatePantryList(boolean isFirstTime) {
-        try{
-            FileInputStream fis = getActivity().getApplicationContext().openFileInput(PANTRY_FILE);
-            InputStreamReader inputStreamReader = new InputStreamReader(fis);
-            LineNumberReader rdr = new LineNumberReader(inputStreamReader);
-            String line = "";
-            if(isFirstTime){
-                while ((line = rdr.readLine()) != null) {
+        try {
+            if (isFirstTime) {
+                for (int i = 0; i < jItemsArray.length(); i++) {
+
+                    addTableRow(jItemsArray.getString(i));
+                }
+            } else {
+                String line = jItemsArray.getString(numItemsListed);
+                if (line != null) {
                     addTableRow(line);
                 }
             }
-            else
-            {
-                rdr.setLineNumber(numItemsListed);
-                if((line = rdr.readLine()) != null){
-                    addTableRow(line);
-                }
-            }
-            fis.close();
-        } catch (FileNotFoundException e){
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    private void addTableRow(String line){
+    private void addTableRow(String line) {
         String item = line.split("#")[0];
         String expiration = line.split("#")[1];
-        View tableRow = getActivity().getLayoutInflater().inflate(R.layout.layout_table_row, null,false);
+        View tableRow = getActivity().getLayoutInflater().inflate(R.layout.layout_table_row, null, false);
         TextView itemName = (TextView) tableRow.findViewById(R.id.item_name);
         TextView expirationDate = (TextView) tableRow.findViewById(R.id.item_expiration);
         itemName.setText(item);
         expirationDate.setText(expiration);
         SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
-        try{
+        try {
             Date date = format.parse(expiration);
-            if(date.before(Calendar.getInstance().getTime())){
+            if (date.before(Calendar.getInstance().getTime())) {
                 expirationDate.setTextColor(Color.RED);
                 itemName.setTextColor(Color.RED);
             }
-        } catch (ParseException e){
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         tableLayout.addView(tableRow);
         numItemsListed++;
     }
-    private void setTextColor(){
+
+    private void setTextColor() {
 
     }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
