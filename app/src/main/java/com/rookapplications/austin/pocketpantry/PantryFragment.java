@@ -2,6 +2,7 @@ package com.rookapplications.austin.pocketpantry;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,7 +19,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -52,7 +55,7 @@ public class PantryFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pantry, container, false);
         tableLayout = (TableLayout) view.findViewById(R.id.tableLayout);
-        updatePantryList();
+        updatePantryList(true);
         return view;
     }
 
@@ -81,7 +84,7 @@ public class PantryFragment extends Fragment {
             String message = item + "#" + format.format(expiration) + '\n';
             fos.write(message.getBytes());
             fos.close();
-            updatePantryList();
+            updatePantryList(false);
         } catch (FileNotFoundException e){
             System.out.println("FileNotFound");
             e.printStackTrace();
@@ -91,23 +94,23 @@ public class PantryFragment extends Fragment {
 
     }
 
-    private void updatePantryList() {
+    private void updatePantryList(boolean isFirstTime) {
         try{
             FileInputStream fis = getActivity().getApplicationContext().openFileInput(PANTRY_FILE);
             InputStreamReader inputStreamReader = new InputStreamReader(fis);
             LineNumberReader rdr = new LineNumberReader(inputStreamReader);
-            rdr.setLineNumber(numItemsListed);
             String line = "";
-            if ((line = rdr.readLine()) != null) {
-                String item = line.split("#")[0];
-                String expiration = line.split("#")[1];
-                View tableRow = getActivity().getLayoutInflater().inflate(R.layout.layout_table_row, null,false);
-                TextView itemName = (TextView) tableRow.findViewById(R.id.item_name);
-                TextView expirationDate = (TextView) tableRow.findViewById(R.id.item_expiration);
-                itemName.setText(item);
-                expirationDate.setText(expiration);
-                tableLayout.addView(tableRow);
-                numItemsListed++;
+            if(isFirstTime){
+                while ((line = rdr.readLine()) != null) {
+                    addTableRow(line);
+                }
+            }
+            else
+            {
+                rdr.setLineNumber(numItemsListed);
+                if((line = rdr.readLine()) != null){
+                    addTableRow(line);
+                }
             }
             fis.close();
         } catch (FileNotFoundException e){
@@ -117,6 +120,27 @@ public class PantryFragment extends Fragment {
         }
     }
 
+    private void addTableRow(String line){
+        String item = line.split("#")[0];
+        String expiration = line.split("#")[1];
+        View tableRow = getActivity().getLayoutInflater().inflate(R.layout.layout_table_row, null,false);
+        TextView itemName = (TextView) tableRow.findViewById(R.id.item_name);
+        TextView expirationDate = (TextView) tableRow.findViewById(R.id.item_expiration);
+        itemName.setText(item);
+        expirationDate.setText(expiration);
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
+        try{
+            Date date = format.parse(expiration);
+            if(date.before(Calendar.getInstance().getTime())){
+                expirationDate.setTextColor(Color.RED);
+                itemName.setTextColor(Color.RED);
+            }
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+        tableLayout.addView(tableRow);
+        numItemsListed++;
+    }
     private void setTextColor(){
 
     }
