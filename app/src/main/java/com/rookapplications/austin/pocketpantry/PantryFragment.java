@@ -108,6 +108,7 @@ public class PantryFragment extends Fragment implements View.OnClickListener{
             }
         }
         jItemsArray = list;
+        mListener.updatePantry(jItemsArray);
     }
 
     public void addItem(String item, Date expiration) {
