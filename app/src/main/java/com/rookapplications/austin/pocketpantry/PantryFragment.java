@@ -36,7 +36,7 @@ import java.util.Date;
  * Use the {@link PantryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PantryFragment extends Fragment {
+public class PantryFragment extends Fragment implements View.OnClickListener{
 
     public static final String PANTRY_FILE = "pantry_file";
     private OnFragmentInteractionListener mListener;
@@ -84,6 +84,32 @@ public class PantryFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onClick(View v) {
+        removeAtIndex(v.getId());
+        tableLayout.removeAllViews();
+        updatePantryList(true);
+    }
+
+    private void removeAtIndex(int position){
+        JSONArray list = new JSONArray();
+        int len = jItemsArray.length();
+        if (jItemsArray != null) {
+            for (int i=0;i<len;i++)
+            {
+                if (i != position)
+                {
+                    try{
+                        list.put(jItemsArray.get(i));
+                    } catch (JSONException e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        jItemsArray = list;
+    }
+
     public void addItem(String item, Date expiration) {
         SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
         String message = item + "#" + format.format(expiration) + '\n';
@@ -113,6 +139,8 @@ public class PantryFragment extends Fragment {
         String item = line.split("#")[0];
         String expiration = line.split("#")[1];
         View tableRow = getActivity().getLayoutInflater().inflate(R.layout.layout_table_row, null, false);
+        tableRow.setId(numItemsListed);
+        tableRow.setOnClickListener(this);
         itemName = (TextView) tableRow.findViewById(R.id.item_name);
         expirationDate = (TextView) tableRow.findViewById(R.id.item_expiration);
         itemName.setText(item);
