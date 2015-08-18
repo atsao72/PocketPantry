@@ -38,7 +38,7 @@ import java.util.Date;
  * Use the {@link PantryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PantryFragment extends Fragment implements View.OnClickListener{
+public class PantryFragment extends Fragment implements View.OnLongClickListener {
 
     public static final String PANTRY_FILE = "pantry_file";
     private OnFragmentInteractionListener mListener;
@@ -87,7 +87,7 @@ public class PantryFragment extends Fragment implements View.OnClickListener{
     }
 
     @Override
-    public void onClick(final View v) {
+    public boolean onLongClick(final View v) {
         new AlertDialog.Builder(getActivity())
                 .setTitle("Delete entry")
                 .setMessage("Are you sure you are done with this ingredient?")
@@ -105,6 +105,7 @@ public class PantryFragment extends Fragment implements View.OnClickListener{
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
+        return true;
     }
 
     private void removeAtIndex(int position){
@@ -157,7 +158,7 @@ public class PantryFragment extends Fragment implements View.OnClickListener{
         String expiration = line.split("#")[1];
         View tableRow = getActivity().getLayoutInflater().inflate(R.layout.layout_table_row, null, false);
         tableRow.setId(numItemsListed);
-        tableRow.setOnClickListener(this);
+        tableRow.setOnLongClickListener(this);
         itemName = (TextView) tableRow.findViewById(R.id.item_name);
         expirationDate = (TextView) tableRow.findViewById(R.id.item_expiration);
         itemName.setText(item);
