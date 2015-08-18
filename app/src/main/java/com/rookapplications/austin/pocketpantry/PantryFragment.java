@@ -43,6 +43,8 @@ public class PantryFragment extends Fragment {
     private TableLayout tableLayout;
     private int numItemsListed;
     private JSONArray jItemsArray;
+    private TextView itemName;
+    private TextView expirationDate;
 
     public PantryFragment() {
         numItemsListed = 0;
@@ -111,17 +113,14 @@ public class PantryFragment extends Fragment {
         String item = line.split("#")[0];
         String expiration = line.split("#")[1];
         View tableRow = getActivity().getLayoutInflater().inflate(R.layout.layout_table_row, null, false);
-        TextView itemName = (TextView) tableRow.findViewById(R.id.item_name);
-        TextView expirationDate = (TextView) tableRow.findViewById(R.id.item_expiration);
+        itemName = (TextView) tableRow.findViewById(R.id.item_name);
+        expirationDate = (TextView) tableRow.findViewById(R.id.item_expiration);
         itemName.setText(item);
         expirationDate.setText(expiration);
         SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
         try {
             Date date = format.parse(expiration);
-            if (date.before(Calendar.getInstance().getTime())) {
-                expirationDate.setTextColor(Color.RED);
-                itemName.setTextColor(Color.RED);
-            }
+            setTextColor(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -129,8 +128,18 @@ public class PantryFragment extends Fragment {
         numItemsListed++;
     }
 
-    private void setTextColor() {
-
+    private void setTextColor(Date date) {
+        Date current = Calendar.getInstance().getTime();
+        Calendar threeDays = Calendar.getInstance();
+        threeDays.add(Calendar.DATE, 3);
+        if (date.before(current)) {
+            expirationDate.setTextColor(Color.parseColor("#E11414"));
+            itemName.setTextColor(Color.parseColor("#E11414"));
+        }
+        else if(date.after(current) && date.before(threeDays.getTime())){
+            expirationDate.setTextColor(Color.parseColor("#FF6600"));
+            itemName.setTextColor(Color.parseColor("#FF6600"));
+        }
     }
 
     /**
