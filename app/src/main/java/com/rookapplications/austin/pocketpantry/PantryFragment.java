@@ -1,7 +1,9 @@
 package com.rookapplications.austin.pocketpantry;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -85,10 +87,24 @@ public class PantryFragment extends Fragment implements View.OnClickListener{
     }
 
     @Override
-    public void onClick(View v) {
-        removeAtIndex(v.getId());
-        tableLayout.removeAllViews();
-        updatePantryList(true);
+    public void onClick(final View v) {
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Delete entry")
+                .setMessage("Are you sure you are done with this ingredient?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        removeAtIndex(v.getId());
+                        tableLayout.removeAllViews();
+                        updatePantryList(true);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     private void removeAtIndex(int position){
